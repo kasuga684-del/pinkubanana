@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ピンクバナナ 面接予約フォーム</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    :root {
+      --primary-color: #ff69b4; /* ホットピンク */
+      --bg-color: #fff0f5; /* ラベンダーブラッシュ（薄いピンク） */
+      --text-color: #333333;
+    }
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.15);
+    }
+    h1 {
+      text-align: center;
+      color: var(--primary-color);
+      font-size: 20px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 10px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .required {
+      color: white;
+      background-color: var(--primary-color);
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+    input[type="text"], input[type="number"], input[type="date"], input[type="time"], select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 16px; /* iOSのズーム防止 */
+      background-color: #fafafa;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      background-color: #fff;
+    }
+    .datetime-group {
+      display: flex;
+      gap: 10px;
+    }
+    .datetime-group input {
+      flex: 1;
+    }
+    .submit-btn {
+      width: 100%;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 15px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+    .submit-btn:disabled {
+      background-color: #cccccc;
+    }
+    .loader {
+      display: none;
+      text-align: center;
+      margin-top: 15px;
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🎀 ピンクバナナ 面接予約 🎀</h1>
+    <form id="recruitForm">
+      <input type="hidden" id="userId" name="userId" value="">
+
+      <div class="form-group">
+        <label>お名前（源氏名・ひらがな可）<span class="required">必須</span></label>
+        <input type="text" name="name" required placeholder="例：さくら">
+      </div>
+
+      <div class="form-group">
+        <label>ご年齢<span class="required">必須</span></label>
+        <input type="number" name="age" required placeholder="例：22" min="18">
+      </div>
+
+      <div class="form-group">
+        <label>第1希望日時<span class="required">必須</span></label>
+        <div class="datetime-group">
+          <input type="date" name="date1" required>
+          <input type="time" name="time1" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>第2希望日時<span class="required">必須</span></label>
+        <div class="datetime-group">
+          <input type="date" name="date2" required>
+          <input type="time" name="time2" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>体験入店のご希望<span class="required">必須</span></label>
+        <select name="experience" required>
+          <option value="" disabled selected>選択してください</option>
+          <option value="面接後にそのまま体験したい">面接後にそのまま体験したい</option>
+          <option value="面接だけしたい（体験は後日）">面接だけしたい（体験は後日）</option>
+          <option value="話を聞いてから決めたい">話を聞いてから決めたい</option>
+        </select>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">この内容で応募する</button>
+      <div class="loader" id="loader">送信中...少々お待ちください✨</div>
+    </form>
+  </div>
+
+  <script>
+    // ピンクバナナのLIFF ID
+    const LIFF_ID = "2009676389-imnmD2KJ"; 
+
+    // GASのURL
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxv_5UDn2yyGAzAWf0LlkoPMXEMjc61wVSH4fKdQTkUmSWywoZOr1EDvcLz-7eAHcSFag/exec";
+
+    // LIFFの初期化
+    async function initializeLiff() {
+      try {
+        await liff.init({ liffId: LIFF_ID });
+        if (liff.isLoggedIn()) {
+          const profile = await liff.getProfile();
+          document.getElementById('userId').value = profile.userId;
+        } else {
+          // LINE内ブラウザ以外で開かれた場合はログインを促す
+          liff.login();
+        }
+      } catch (err) {
+        console.error('LIFF Initialization failed', err);
+      }
+    }
+
+    // ページ読み込み時にLIFFを初期化
+    window.addEventListener('DOMContentLoaded', () => {
+      initializeLiff();
+    });
+
+    // フォーム送信処理
+    document.getElementById('recruitForm').addEventListener('submit', function(e) {
+      e.preventDefault(); 
+      
+      const btn = document.getElementById('submitBtn');
+      const loader = document.getElementById('loader');
+      
+      btn.disabled = true;
+      btn.style.backgroundColor = '#ccc';
+      loader.style.display = 'block';
+
+      // フォームデータを取得
+      const formData = new FormData(this);
+      const params = new URLSearchParams();
+      for (const pair of formData.entries()) {
+        params.append(pair[0], pair[1]);
+      }
+
+      // GASへ送信
+      fetch(GAS_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: params.toString()
+      })
+      .then(response => response.text())
+      .then(data => {
+        alert("ご応募ありがとうございます！LINEのトーク画面に戻り、メッセージをご確認ください。");
+        if (liff.isInClient()) {
+          liff.closeWindow(); // LINE内の場合はウィンドウを閉じる
+        } else {
+          btn.disabled = false;
+          btn.style.backgroundColor = '#ff69b4';
+          loader.style.display = 'none';
+          document.getElementById('recruitForm').reset();
+        }
+      })
+      .catch(error => {
+        alert("通信エラーが発生しました。お手数ですが時間をおいて再度お試しください。");
+        btn.disabled = false;
+        btn.style.backgroundColor = '#ff69b4';
+        loader.style.display = 'none';
+      });
+    });
+  </script>
+</body>
+</html>
