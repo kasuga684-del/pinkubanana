@@ -7,8 +7,8 @@
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root {
-      --primary-color: #ff69b4; /* ホットピンク */
-      --bg-color: #fff0f5; /* ラベンダーブラッシュ（薄いピンク） */
+      --primary-color: #ff69b4;
+      --bg-color: #fff0f5;
       --text-color: #333333;
     }
     body {
@@ -52,16 +52,30 @@
       margin-left: 5px;
       vertical-align: middle;
     }
-    input[type="text"], input[type="number"], input[type="date"], input[type="time"], select {
+    .optional {
+      color: #666;
+      background-color: #eee;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+    input[type="text"], input[type="number"], input[type="date"], select, textarea {
       width: 100%;
       padding: 12px;
       border: 1px solid #ddd;
       border-radius: 8px;
       box-sizing: border-box;
-      font-size: 16px; /* iOSのズーム防止 */
+      font-size: 16px;
       background-color: #fafafa;
+      font-family: inherit;
     }
-    input:focus, select:focus {
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--primary-color);
       background-color: #fff;
@@ -70,7 +84,7 @@
       display: flex;
       gap: 10px;
     }
-    .datetime-group input {
+    .datetime-group input, .datetime-group select {
       flex: 1;
     }
     .submit-btn {
@@ -106,20 +120,45 @@
       <input type="hidden" id="userId" name="userId" value="">
 
       <div class="form-group">
-        <label>お名前（源氏名・ひらがな可）<span class="required">必須</span></label>
+        <label>お名前（偽名でも可）<span class="required">必須</span></label>
         <input type="text" name="name" required placeholder="例：さくら">
       </div>
 
       <div class="form-group">
         <label>ご年齢<span class="required">必須</span></label>
-        <input type="number" name="age" required placeholder="例：22" min="18">
+        <select name="age" required>
+          <option value="" disabled selected>選択してください</option>
+          <option value="18">18</option><option value="19">19</option><option value="20">20</option>
+          <option value="21">21</option><option value="22">22</option><option value="23">23</option>
+          <option value="24">24</option><option value="25">25</option><option value="26">26</option>
+          <option value="27">27</option><option value="28">28</option><option value="29">29</option>
+          <option value="30">30</option><option value="31">31</option><option value="32">32</option>
+          <option value="33">33</option><option value="34">34</option><option value="35">35</option>
+          <option value="36">36</option><option value="37">37</option><option value="38">38</option>
+          <option value="39">39</option><option value="40">40</option>
+        </select>
       </div>
 
       <div class="form-group">
         <label>第1希望日時<span class="required">必須</span></label>
         <div class="datetime-group">
           <input type="date" name="date1" required>
-          <input type="time" name="time1" required>
+          <select name="time1" required>
+            <option value="" disabled selected>--:--</option>
+            <option value="10:00">10:00</option><option value="10:30">10:30</option>
+            <option value="11:00">11:00</option><option value="11:30">11:30</option>
+            <option value="12:00">12:00</option><option value="12:30">12:30</option>
+            <option value="13:00">13:00</option><option value="13:30">13:30</option>
+            <option value="14:00">14:00</option><option value="14:30">14:30</option>
+            <option value="15:00">15:00</option><option value="15:30">15:30</option>
+            <option value="16:00">16:00</option><option value="16:30">16:30</option>
+            <option value="17:00">17:00</option><option value="17:30">17:30</option>
+            <option value="18:00">18:00</option><option value="18:30">18:30</option>
+            <option value="19:00">19:00</option><option value="19:30">19:30</option>
+            <option value="20:00">20:00</option><option value="20:30">20:30</option>
+            <option value="21:00">21:00</option><option value="21:30">21:30</option>
+            <option value="22:00">22:00</option>
+          </select>
         </div>
       </div>
 
@@ -127,7 +166,22 @@
         <label>第2希望日時<span class="required">必須</span></label>
         <div class="datetime-group">
           <input type="date" name="date2" required>
-          <input type="time" name="time2" required>
+          <select name="time2" required>
+            <option value="" disabled selected>--:--</option>
+            <option value="10:00">10:00</option><option value="10:30">10:30</option>
+            <option value="11:00">11:00</option><option value="11:30">11:30</option>
+            <option value="12:00">12:00</option><option value="12:30">12:30</option>
+            <option value="13:00">13:00</option><option value="13:30">13:30</option>
+            <option value="14:00">14:00</option><option value="14:30">14:30</option>
+            <option value="15:00">15:00</option><option value="15:30">15:30</option>
+            <option value="16:00">16:00</option><option value="16:30">16:30</option>
+            <option value="17:00">17:00</option><option value="17:30">17:30</option>
+            <option value="18:00">18:00</option><option value="18:30">18:30</option>
+            <option value="19:00">19:00</option><option value="19:30">19:30</option>
+            <option value="20:00">20:00</option><option value="20:30">20:30</option>
+            <option value="21:00">21:00</option><option value="21:30">21:30</option>
+            <option value="22:00">22:00</option>
+          </select>
         </div>
       </div>
 
@@ -141,19 +195,22 @@
         </select>
       </div>
 
+      <div class="form-group">
+        <label>ご質問や気になること<span class="optional">任意</span></label>
+        <textarea name="questions" placeholder="面接前の不安なことや、ご質問などがあればご自由にお書きください。"></textarea>
+      </div>
+
       <button type="submit" class="submit-btn" id="submitBtn">この内容で応募する</button>
       <div class="loader" id="loader">送信中...少々お待ちください✨</div>
     </form>
   </div>
 
   <script>
-    // ピンクバナナのLIFF ID
     const LIFF_ID = "2009676389-imnmD2KJ"; 
 
-    // GASのURL
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxv_5UDn2yyGAzAWf0LlkoPMXEMjc61wVSH4fKdQTkUmSWywoZOr1EDvcLz-7eAHcSFag/exec";
+    // ★★★ここに新しく発行したGASのURLを貼り付けてください★★★
+    const GAS_URL = "ここに新しいGASのURLを貼り付ける";
 
-    // LIFFの初期化
     async function initializeLiff() {
       try {
         await liff.init({ liffId: LIFF_ID });
@@ -161,7 +218,6 @@
           const profile = await liff.getProfile();
           document.getElementById('userId').value = profile.userId;
         } else {
-          // LINE内ブラウザ以外で開かれた場合はログインを促す
           liff.login();
         }
       } catch (err) {
@@ -169,15 +225,18 @@
       }
     }
 
-    // ページ読み込み時にLIFFを初期化
     window.addEventListener('DOMContentLoaded', () => {
       initializeLiff();
     });
 
-    // フォーム送信処理
     document.getElementById('recruitForm').addEventListener('submit', function(e) {
       e.preventDefault(); 
       
+      if(GAS_URL.includes("ここに新しいGASのURLを貼り付ける")) {
+        alert("GASのURLが設定されていません。コードを確認してください。");
+        return;
+      }
+
       const btn = document.getElementById('submitBtn');
       const loader = document.getElementById('loader');
       
@@ -185,14 +244,12 @@
       btn.style.backgroundColor = '#ccc';
       loader.style.display = 'block';
 
-      // フォームデータを取得
       const formData = new FormData(this);
       const params = new URLSearchParams();
       for (const pair of formData.entries()) {
         params.append(pair[0], pair[1]);
       }
 
-      // GASへ送信
       fetch(GAS_URL, {
         method: 'POST',
         headers: {
@@ -204,7 +261,7 @@
       .then(data => {
         alert("ご応募ありがとうございます！LINEのトーク画面に戻り、メッセージをご確認ください。");
         if (liff.isInClient()) {
-          liff.closeWindow(); // LINE内の場合はウィンドウを閉じる
+          liff.closeWindow(); 
         } else {
           btn.disabled = false;
           btn.style.backgroundColor = '#ff69b4';
