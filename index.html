@@ -206,10 +206,9 @@
   </div>
 
   <script>
+    // LIFF IDとGASのURLを完全に組み込み済みです
     const LIFF_ID = "2009676389-imnmD2KJ"; 
-
-    // ★★★ここに新しく発行したGASのURLを貼り付けてください★★★
-    const GAS_URL = "ここに新しいGASのURLを貼り付ける";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxv_5UDn2yyGAzAWf0LlkoPMXEMjc61wVSH4fKdQTkUmSWywoZOr1EDvcLz-7eAHcSFag/exec";
 
     async function initializeLiff() {
       try {
@@ -231,11 +230,6 @@
 
     document.getElementById('recruitForm').addEventListener('submit', function(e) {
       e.preventDefault(); 
-      
-      if(GAS_URL.includes("ここに新しいGASのURLを貼り付ける")) {
-        alert("GASのURLが設定されていません。コードを確認してください。");
-        return;
-      }
 
       const btn = document.getElementById('submitBtn');
       const loader = document.getElementById('loader');
